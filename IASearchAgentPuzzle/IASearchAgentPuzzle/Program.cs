@@ -17,11 +17,53 @@ namespace IASearchAgentPuzzle
             string startBoard = Console.ReadLine();
 
             int[,] startState = GetBoardFromString(startBoard);
+            DisplayBoard(startState);
             int[,] goalState = GetGoalState();
 
             Node startNode = new Node(startState);
 
+            Utility.CreateChildren(startNode);
+
+            Check(startNode);
+
             Solver.BFS(startNode, goalState);
+        }
+
+        private static void Check(Node n)
+        {
+            Queue<Node> tree = new Queue<Node>();
+            int nbrNode = 0;
+            tree.Enqueue(n);
+            while(tree.Count > 0)
+            {
+                
+                Node current = tree.Dequeue();
+
+                DisplayBoard(current.Board);
+
+                foreach(Node child in current.Children)
+                {
+                    tree.Enqueue(child);
+                    nbrNode++;
+                }
+            }
+
+            Console.WriteLine("Nombre de Noeud : " + nbrNode);
+
+            Console.ReadLine();
+        }
+
+        private static void DisplayBoard(int[,] board)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    Console.Write(" |"+ board[i,j] +"| ");
+                }
+                Console.WriteLine("\n-----------------------\n");
+            }
+            Console.WriteLine("*****************************************************");
         }
 
         private static int[,] GetBoardFromString(string startBoard)
@@ -38,8 +80,9 @@ namespace IASearchAgentPuzzle
                     continue;
                 }
 
-                sendBack[i, j++] = Convert.ToInt32(c); 
-
+                sendBack[i, j] = (int)char.GetNumericValue(c);
+                Console.WriteLine("Valeur convertie : " + sendBack[i,j]);
+                j++;
                 if(j == 3)
                 {
                     j = 0;
@@ -58,9 +101,9 @@ namespace IASearchAgentPuzzle
 
             for(int i = 0; i < 3; i++)
             {
-                for(int j = 0; i < 3; j++)
+                for(int j = 0; j < 3; j++)
                 {
-                    goalState[i, j] = value++;
+                    goalState[i,j] = value++;
                 }
             }
 

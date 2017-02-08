@@ -1,1 +1,7 @@
 c:\users\braise\documents\visual studio 2015\Projects\IASearchAgentPuzzle\IASearchAgentPuzzle\bin\Debug\IASearchAgentPuzzle.exe.config
+C:\Users\Braise\Source\Repos\SearchAgent\IASearchAgentPuzzle\IASearchAgentPuzzle\bin\Debug\IASearchAgentPuzzle.exe.config
+C:\Users\Braise\Source\Repos\SearchAgent\IASearchAgentPuzzle\IASearchAgentPuzzle\obj\Debug\IASearchAgentPuzzle.csprojResolveAssemblyReference.cache
+C:\Users\Braise\Source\Repos\SearchAgent\IASearchAgentPuzzle\IASearchAgentPuzzle\bin\Debug\IASearchAgentPuzzle.exe
+C:\Users\Braise\Source\Repos\SearchAgent\IASearchAgentPuzzle\IASearchAgentPuzzle\bin\Debug\IASearchAgentPuzzle.pdb
+C:\Users\Braise\Source\Repos\SearchAgent\IASearchAgentPuzzle\IASearchAgentPuzzle\obj\Debug\IASearchAgentPuzzle.exe
+C:\Users\Braise\Source\Repos\SearchAgent\IASearchAgentPuzzle\IASearchAgentPuzzle\obj\Debug\IASearchAgentPuzzle.pdb
