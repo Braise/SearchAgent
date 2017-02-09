@@ -9,11 +9,13 @@ namespace IASearchAgentPuzzle
 {
     class Solver
     {
-        private static Queue<Node> frontier = new Queue<Node>();
-        private static Queue<Node> explored = new Queue<Node>();
+        
 
         public static Node BFS(Node startState, int[,] goalState)
         {
+            Queue<Node> frontier = new Queue<Node>();
+            Queue<Node> explored = new Queue<Node>();
+
             frontier.Enqueue(startState);
 
             while(frontier.Count > 0)
@@ -36,6 +38,34 @@ namespace IASearchAgentPuzzle
             return null;
         }
 
+        public static Node DFS(Node startState, int[,] goalState)
+        {
+            Stack<Node> frontier = new Stack<Node>();
+            Stack<Node> explored = new Stack<Node>();
+
+            frontier.Push(startState);
+
+            while (frontier.Count > 0)
+            {
+                Node currentState = frontier.Pop();
+
+                if (compareToGoalState(currentState, goalState))
+                {
+                    return currentState;
+                }
+                else
+                {
+                    Utility.CreateChildren(currentState);
+
+                    foreach (Node n in currentState.Children)
+                    {
+                        frontier.Push(n);
+                    }
+                }
+            }
+            return null;
+        }
+
         private static bool compareToGoalState(Node state, int[,] goalState)
         {
             for(int i = 0; i < 3; i++)
@@ -49,32 +79,6 @@ namespace IASearchAgentPuzzle
                 }
             }
             return true;
-        }
-
-        private static IList<Node> GetChildState(Node currentState)
-        {
-            IList<Node> liste = new List<Node>();
-
-            for(int i = 0; i < 3; i++)
-            {
-                for(int j = 0; j < 3; j++)
-                {
-                    if(currentState.Board[i,j] == 0)
-                    {
-                        switch (i)
-                        {
-                            case 0:
-                                if(j == 0)
-                                {
-                                    //création des nouveaux état sans perdre le précédent
-                                }
-                                break;
-                        }
-                    }
-                }
-            }
-
-            return null;
         }
     }
 }

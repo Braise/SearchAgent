@@ -22,9 +22,20 @@ namespace IASearchAgentPuzzle
 
             Node startNode = new Node(startState);
 
-            //Check(startNode);
+            Node solutionState = null;
 
-            Node solutionState = Solver.BFS(startNode, goalState);
+            switch (algo)
+            {
+                case "bfs":
+                    solutionState = Solver.BFS(startNode, goalState);
+                    break;
+                case "dfs":
+                    solutionState = Solver.DFS(startNode, goalState);
+                    break;
+                default:
+                    Console.WriteLine("Algo non reconnus!");
+                    return;
+            }
             
             foreach(Utility.Movement mv in solutionState.path)
             {
@@ -44,30 +55,6 @@ namespace IASearchAgentPuzzle
                         break;
                 }
             }
-            Console.ReadLine();
-        }
-
-        private static void Check(Node n)
-        {
-            Queue<Node> tree = new Queue<Node>();
-            int nbrNode = 0;
-            tree.Enqueue(n);
-            while(tree.Count > 0)
-            {
-                
-                Node current = tree.Dequeue();
-
-                DisplayBoard(current.Board);
-
-                foreach(Node child in current.Children)
-                {
-                    tree.Enqueue(child);
-                    nbrNode++;
-                }
-            }
-
-            Console.WriteLine("Nombre de Noeud : " + nbrNode);
-
             Console.ReadLine();
         }
 

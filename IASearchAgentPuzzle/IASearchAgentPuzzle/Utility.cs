@@ -14,11 +14,6 @@ namespace IASearchAgentPuzzle
         {
             IList<Movement> listMovement = GetAllMovements(leaf.Board);
 
-            if(listMovement == null)
-            {
-                return;
-            }
-
             foreach (Movement mv in listMovement)
             {
                 int line, column;
@@ -115,7 +110,9 @@ namespace IASearchAgentPuzzle
                     switch (column)
                     {
                         case 0:
-                            return null;
+                            listMovement.Add(Movement.Right);
+                            listMovement.Add(Movement.Down);
+                            return listMovement;
                         case 1:
                             listMovement.Add(Movement.Left);
                             listMovement.Add(Movement.Right);
