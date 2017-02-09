@@ -12,7 +12,7 @@ namespace IASearchAgentPuzzle
         private static Queue<Node> frontier = new Queue<Node>();
         private static Queue<Node> explored = new Queue<Node>();
 
-        public static void BFS(Node startState, int[,] goalState)
+        public static Node BFS(Node startState, int[,] goalState)
         {
             frontier.Enqueue(startState);
 
@@ -22,11 +22,18 @@ namespace IASearchAgentPuzzle
 
                 if (compareToGoalState(currentState, goalState))
                 {
-                    //Success
-                    return;
-                }
+                    return currentState;
+                }else
+                {
+                    Utility.CreateChildren(currentState);
 
+                    foreach(Node n in currentState.Children)
+                    {
+                        frontier.Enqueue(n);
+                    }
+                }
             }
+            return null;
         }
 
         private static bool compareToGoalState(Node state, int[,] goalState)

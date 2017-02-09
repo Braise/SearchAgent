@@ -10,7 +10,7 @@ namespace IASearchAgentPuzzle
     {
         public int[,] Board { get; set; }
         public IList<Node> Children { get; set; }
-        public Node Parent;
+        public Queue<Utility.Movement> path { get; set; }
 
         public Node(int[,] state)
         {

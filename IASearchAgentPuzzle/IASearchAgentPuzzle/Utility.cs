@@ -8,7 +8,7 @@ namespace IASearchAgentPuzzle
 {
     class Utility
     {
-        private enum Movement { Up, Down, Left, Right}
+        public enum Movement { Up, Down, Left, Right}
 
         public static void CreateChildren(Node leaf)
         {
@@ -18,8 +18,6 @@ namespace IASearchAgentPuzzle
             {
                 return;
             }
-
-            Queue<Node> StateToExplore = new Queue<Node>();
 
             foreach (Movement mv in listMovement)
             {
@@ -43,7 +41,7 @@ namespace IASearchAgentPuzzle
                     case Movement.Right:
                         temp = board[line, column];
                         board[line, column] = board[line, (column + 1)];
-                        board[(line + 1), column] = temp;
+                        board[line, (column + 1)] = temp;
                         break;
                     case Movement.Left:
                         temp = board[line, column];
@@ -53,12 +51,18 @@ namespace IASearchAgentPuzzle
                 }
 
                 Node newNode = new Node(board);
-                newNode.Parent = leaf;
-                leaf.Children.Add(newNode);
-                StateToExplore.Enqueue(newNode);
-            }
 
-            CreateChildren(StateToExplore.Dequeue());
+                if(leaf.path == null)
+                {
+                    newNode.path = new Queue<Movement>(); // Leaf is root
+                }else
+                {
+                    newNode.path = new Queue<Movement>(leaf.path);
+                }
+                
+                newNode.path.Enqueue(mv);
+                leaf.Children.Add(newNode);
+            }    
         }
 
         private static int[,] CopyArray(int[,] toCopy)
@@ -84,7 +88,6 @@ namespace IASearchAgentPuzzle
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    //Console.WriteLine("Tableau a : " + i + ", " + j + " a pour valeur : " + board[i, j]);
                     if (board[i, j] == 0)
                     {
                         line = i;
@@ -102,7 +105,6 @@ namespace IASearchAgentPuzzle
             int line, column;
 
             GetPosition0(board, out line, out column);
-            Console.WriteLine("Coordonnée 0 : " + line + ", " + column);
 
             //Get the possible movements
             IList<Movement> listMovement = new List<Movement>();

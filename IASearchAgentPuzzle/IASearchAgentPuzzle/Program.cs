@@ -22,11 +22,29 @@ namespace IASearchAgentPuzzle
 
             Node startNode = new Node(startState);
 
-            Utility.CreateChildren(startNode);
+            //Check(startNode);
 
-            Check(startNode);
-
-            Solver.BFS(startNode, goalState);
+            Node solutionState = Solver.BFS(startNode, goalState);
+            
+            foreach(Utility.Movement mv in solutionState.path)
+            {
+                switch (mv)
+                {
+                    case Utility.Movement.Up:
+                        Console.WriteLine("UP");
+                        break;
+                    case Utility.Movement.Down:
+                        Console.WriteLine("DOWN");
+                        break;
+                    case Utility.Movement.Left:
+                        Console.WriteLine("LEFT");
+                        break;
+                    case Utility.Movement.Right:
+                        Console.WriteLine("RIGHT");
+                        break;
+                }
+            }
+            Console.ReadLine();
         }
 
         private static void Check(Node n)
@@ -80,9 +98,8 @@ namespace IASearchAgentPuzzle
                     continue;
                 }
 
-                sendBack[i, j] = (int)char.GetNumericValue(c);
-                Console.WriteLine("Valeur convertie : " + sendBack[i,j]);
-                j++;
+                sendBack[i, j++] = (int)char.GetNumericValue(c);
+
                 if(j == 3)
                 {
                     j = 0;
