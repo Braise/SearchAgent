@@ -9,37 +9,68 @@ namespace IASearchAgentPuzzle
 {
     class Solver
     {
-        
+        private static Queue<Node> frontier;
+        private static IList<Node> explored;
 
         public static Node BFS(Node startState, int[,] goalState)
         {
-            Queue<Node> frontier = new Queue<Node>();
-            IList<Node> explored = new List<Node>();
+           if(compareToGoalState(startState, goalState))
+            {
+                return startState;
+            }
 
-            frontier.Enqueue(startState);
+            Utility.CreateChildren(startState);
+
+            explored = new List<Node> { startState };
+            Task<Node>[] tasks = new Task<Node>[4];
+            int i = 0;
+
+            foreach (Node n in startState.Children) // max 4 states, which is convenient because we only have 4 tasks waiting
+            {
+                Task<Node> thread = new Task<Node>(() => CheckForMatchBFS(n, goalState));
+                tasks[i] = thread;
+                i++;
+            }
+
+            int index = Task.WaitAny(tasks);
+
+            return tasks[index].Result;
+        }
+
+        private static Node CheckForMatchBFS(Node currentState, int[,] goalState)
+        {
+            Queue<Node> frontier = new Queue<Node>();
+            frontier.Enqueue(currentState);
 
             while(frontier.Count > 0)
             {
-                Node currentState = frontier.Dequeue();
-
                 if (compareToGoalState(currentState, goalState))
                 {
                     return currentState;
-                }else
+                }
+                else
                 {
-                    explored.Add(currentState);
+                    lock (explored) // write into the List, no other thread should access it during this time
+                    {
+                        explored.Add(currentState);
+                    }
+                    
                     Utility.CreateChildren(currentState);
 
-                    foreach (Node node in currentState.Children)
+                    foreach (Node n in currentState.Children)
                     {
-                        if (explored.Contains(node) || frontier.Contains(node))
+                        lock (explored) // read the list, no other thread should modify it during this time
                         {
-                            break;
-                        }
-                        frontier.Enqueue(node);
+                            if (explored.Contains(n) || frontier.Contains(n))
+                            {
+                                break;
+                            }
+                        }     
+                        frontier.Enqueue(n);
                     }
                 }
             }
+            
             return null;
         }
 

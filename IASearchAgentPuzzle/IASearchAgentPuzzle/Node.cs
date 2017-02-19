@@ -18,7 +18,7 @@ namespace IASearchAgentPuzzle
             Children = new List<Node>();
         }
 
-        public override bool  Equals(object obj)
+        public override bool Equals(object obj)
         {
             if(obj == null)
             {
