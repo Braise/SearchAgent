@@ -14,7 +14,7 @@ namespace IASearchAgentPuzzle
         public static Node BFS(Node startState, int[,] goalState)
         {
             Queue<Node> frontier = new Queue<Node>();
-            Queue<Node> explored = new Queue<Node>();
+            IList<Node> explored = new List<Node>();
 
             frontier.Enqueue(startState);
 
@@ -27,11 +27,16 @@ namespace IASearchAgentPuzzle
                     return currentState;
                 }else
                 {
+                    explored.Add(currentState);
                     Utility.CreateChildren(currentState);
 
-                    foreach(Node n in currentState.Children)
+                    foreach (Node node in currentState.Children)
                     {
-                        frontier.Enqueue(n);
+                        if (explored.Contains(node) || frontier.Contains(node))
+                        {
+                            break;
+                        }
+                        frontier.Enqueue(node);
                     }
                 }
             }
@@ -41,7 +46,7 @@ namespace IASearchAgentPuzzle
         public static Node DFS(Node startState, int[,] goalState)
         {
             Stack<Node> frontier = new Stack<Node>();
-            Stack<Node> explored = new Stack<Node>();
+            IList<Node> explored = new List<Node>();
 
             frontier.Push(startState);
 
@@ -55,11 +60,16 @@ namespace IASearchAgentPuzzle
                 }
                 else
                 {
+                    explored.Add(currentState);
                     Utility.CreateChildren(currentState);
 
-                    foreach (Node n in currentState.Children)
-                    {
-                        frontier.Push(n);
+                    foreach (Node node in currentState.Children)
+                    {                       
+                        if (explored.Contains(node) || frontier.Contains(node))
+                        {
+                            break;
+                        }
+                        frontier.Push(node);   
                     }
                 }
             }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,13 +25,19 @@ namespace IASearchAgentPuzzle
 
             Node solutionState = null;
 
+            Stopwatch delay;
+
             switch (algo)
             {
                 case "bfs":
+                    delay = Stopwatch.StartNew();
                     solutionState = Solver.BFS(startNode, goalState);
+                    delay.Stop();
                     break;
                 case "dfs":
+                    delay = Stopwatch.StartNew();
                     solutionState = Solver.DFS(startNode, goalState);
+                    delay.Stop();
                     break;
                 default:
                     Console.WriteLine("Algo non reconnus!");
@@ -55,6 +62,9 @@ namespace IASearchAgentPuzzle
                         break;
                 }
             }
+
+            Console.WriteLine("Temps d'exécution : " + delay.ElapsedMilliseconds);
+
             Console.ReadLine();
         }
 

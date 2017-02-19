@@ -17,5 +17,48 @@ namespace IASearchAgentPuzzle
             Board = state;
             Children = new List<Node>();
         }
+
+        public override bool  Equals(object obj)
+        {
+            if(obj == null)
+            {
+                return false;
+            }
+
+            Node n = obj as Node;
+
+            if(n == null)
+            {
+                return false;
+            }
+
+            return Equals(n);
+        }
+
+        public bool Equals(Node n)
+        {
+            if(n == null)
+            {
+                return false;
+            }
+
+            for(int i = 0; i < 3; i++)
+            {
+                for(int j = 0; j < 3; j++)
+                {
+                    if(n.Board[i,j] != Board[i,j])
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }
