@@ -40,7 +40,8 @@ namespace IASearchAgentPuzzle
                     delay.Stop();
                     break;
                 default:
-                    Console.WriteLine("Algo non reconnus!");
+                    Console.WriteLine("Algo non reconnus! : " + algo);
+                    Console.ReadLine();
                     return;
             }
             

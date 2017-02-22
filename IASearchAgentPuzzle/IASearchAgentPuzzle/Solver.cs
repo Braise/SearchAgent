@@ -22,17 +22,15 @@ namespace IASearchAgentPuzzle
             Utility.CreateChildren(startState);
 
             explored = new List<Node> { startState };
-            Task<Node>[] tasks = new Task<Node>[4];
-            int i = 0;
+            IList<Task<Node>> tasks = new List<Task<Node>>();
 
             foreach (Node n in startState.Children) // max 4 states, which is convenient because we only have 4 tasks waiting
             {
                 Task<Node> thread = new Task<Node>(() => CheckForMatchBFS(n, goalState));
-                tasks[i] = thread;
-                i++;
+                tasks.Add(thread);
             }
 
-            int index = Task.WaitAny(tasks);
+            int index = Task.WaitAny(tasks.ToArray());
 
             return tasks[index].Result;
         }
