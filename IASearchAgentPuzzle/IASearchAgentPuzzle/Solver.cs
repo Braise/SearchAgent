@@ -151,6 +151,8 @@ namespace IASearchAgentPuzzle
                         }
                     }
 
+                    Utility.CreateChildren(currentState);
+
                     foreach (Node n in currentState.Children)
                     {
                         lock (exploredDfs) // read the list, no other thread should modify it during this time
