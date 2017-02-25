@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IASearchAgentPuzzle
 {
-    class Node
+    class Node : IEquatable<Node>
     {
         public int[,] Board { get; set; }
         public IList<Node> Children { get; set; }

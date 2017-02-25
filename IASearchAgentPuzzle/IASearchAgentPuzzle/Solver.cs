@@ -9,8 +9,8 @@ namespace IASearchAgentPuzzle
 {
     class Solver
     {
-        private static Queue<Node> frontier;
         private static IList<Node> explored;
+        private static IList<Node> exploredDfs;
 
         public static Node BFS(Node startState, int[,] goalState)
         {
@@ -22,17 +22,31 @@ namespace IASearchAgentPuzzle
             Utility.CreateChildren(startState);
 
             explored = new List<Node> { startState };
+
             IList<Task<Node>> tasks = new List<Task<Node>>();
 
-            foreach (Node n in startState.Children) // max 4 states, which is convenient because we only have 4 tasks waiting
+            foreach (Node n in startState.Children)
             {
                 Task<Node> thread = new Task<Node>(() => CheckForMatchBFS(n, goalState));
                 tasks.Add(thread);
+                thread.Start();
             }
 
-            int index = Task.WaitAny(tasks.ToArray());
+            bool wait = true;
 
-            return tasks[index].Result;
+            do
+            {
+                int index = Task.WaitAny(tasks.ToArray());
+
+                if (tasks[index].Result != null)
+                {
+                    return tasks[index].Result;
+                }
+
+                tasks.RemoveAt(index);
+
+            } while (wait);
+            return null;
         }
 
         private static Node CheckForMatchBFS(Node currentState, int[,] goalState)
@@ -42,17 +56,22 @@ namespace IASearchAgentPuzzle
 
             while(frontier.Count > 0)
             {
+                currentState = frontier.Dequeue();
                 if (compareToGoalState(currentState, goalState))
                 {
+                    Console.WriteLine("Find a solution");
                     return currentState;
                 }
                 else
                 {
                     lock (explored) // write into the List, no other thread should access it during this time
                     {
-                        explored.Add(currentState);
+                        if (!explored.Contains(currentState)) //It's possible that an other thread has already inserted th state into the list
+                        {
+                            explored.Add(currentState);
+                        }
                     }
-                    
+
                     Utility.CreateChildren(currentState);
 
                     foreach (Node n in currentState.Children)
@@ -61,21 +80,56 @@ namespace IASearchAgentPuzzle
                         {
                             if (explored.Contains(n) || frontier.Contains(n))
                             {
-                                break;
+                                continue;
                             }
                         }     
                         frontier.Enqueue(n);
                     }
                 }
-            }
-            
+            }            
             return null;
         }
 
         public static Node DFS(Node startState, int[,] goalState)
         {
+            if (compareToGoalState(startState, goalState))
+            {
+                return startState;
+            }
+
+            Utility.CreateChildren(startState);
+
+            exploredDfs= new List<Node> { startState };
+
+            IList<Task<Node>> tasks = new List<Task<Node>>();
+
+            foreach (Node n in startState.Children)
+            {
+                Task<Node> thread = new Task<Node>(() => CheckForMatchDFS(n, goalState));
+                tasks.Add(thread);
+                thread.Start();
+            }
+
+            bool wait = true;
+
+            do
+            {
+                int index = Task.WaitAny(tasks.ToArray());
+
+                if (tasks[index].Result != null)
+                {
+                    return tasks[index].Result;
+                }
+
+                tasks.RemoveAt(index);
+
+            } while (wait);
+            return null;
+        }
+
+        private static Node CheckForMatchDFS(Node startState, int[,] goalState)
+        {
             Stack<Node> frontier = new Stack<Node>();
-            IList<Node> explored = new List<Node>();
 
             frontier.Push(startState);
 
@@ -89,16 +143,24 @@ namespace IASearchAgentPuzzle
                 }
                 else
                 {
-                    explored.Add(currentState);
-                    Utility.CreateChildren(currentState);
-
-                    foreach (Node node in currentState.Children)
-                    {                       
-                        if (explored.Contains(node) || frontier.Contains(node))
+                    lock (exploredDfs) // write into the List, no other thread should access it during this time
+                    {
+                        if (!exploredDfs.Contains(currentState)) //It's possible that an other thread has already inserted the state into the list
                         {
-                            break;
+                            exploredDfs.Add(currentState);
                         }
-                        frontier.Push(node);   
+                    }
+
+                    foreach (Node n in currentState.Children)
+                    {
+                        lock (exploredDfs) // read the list, no other thread should modify it during this time
+                        {
+                            if (exploredDfs.Contains(n) || frontier.Contains(n))
+                            {
+                                continue;
+                            }
+                        }
+                        frontier.Push(n);
                     }
                 }
             }
